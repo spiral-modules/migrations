@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Spiral\Migrations;
 
-use Doctrine\Common\Inflector\Inflector;
 use Spiral\Core\Container;
 use Spiral\Core\FactoryInterface;
 use Spiral\Files\Files;
@@ -63,6 +62,8 @@ final class FileRepository implements RepositoryInterface
      */
     public function getMigrations(): array
     {
+        $timestamps = [];
+        $chunks = [];
         $migrations = [];
 
         foreach ($this->getFiles() as $f) {
@@ -74,12 +75,12 @@ final class FileRepository implements RepositoryInterface
             /** @var MigrationInterface $migration */
             $migration = $this->factory->make($f['class']);
 
-            $migrations[$f['created']->getTimestamp() . $f['chunk']] = $migration->withState(
-                new State($f['name'], $f['created'])
-            );
+            $timestamps[] = $f['created']->getTimestamp();
+            $chunks[] = $f['chunk'];
+            $migrations[] = $migration->withState(new State($f['name'], $f['created']));
         }
 
-        ksort($migrations);
+        array_multisort($timestamps, $chunks, SORT_ASC | SORT_NATURAL, $migrations);
 
         return $migrations;
     }
@@ -95,6 +96,7 @@ final class FileRepository implements RepositoryInterface
             );
         }
 
+        $currentTimeStamp = date(self::TIMESTAMP_FORMAT);
         $inflectedName = $this->inflector->tableize($name);
 
         foreach ($this->getMigrations() as $migration) {
@@ -104,7 +106,10 @@ final class FileRepository implements RepositoryInterface
                 );
             }
 
-            if ($migration->getState()->getName() === $inflectedName) {
+            if (
+                $migration->getState()->getName() === $inflectedName
+                && $migration->getState()->getTimeCreated()->format(self::TIMESTAMP_FORMAT) === $currentTimeStamp
+            ) {
                 throw new RepositoryException(
                     "Unable to register migration '{$inflectedName}', migration under the same name already exists"
                 );

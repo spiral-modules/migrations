@@ -12,10 +12,47 @@ declare(strict_types=1);
 namespace Spiral\Migrations\Tests;
 
 use Spiral\Migrations\Capsule;
+use Spiral\Migrations\Exception\MigrationException;
 use Spiral\Migrations\State;
 
 abstract class MigratorTest extends BaseTest
 {
+    public function testSortingOrder(): void
+    {
+        $files = [
+            '20200909.024119_333_333_migration_1.php'   => 'A3',
+            '20200909.030203_22_22_migration_1.php'     => 'B2',
+            '20200909.030203_23_23_migration_1.php'     => 'B3',
+            '20200909.024119_1_1_migration_1.php'       => 'A1',
+            '20200909.024119_22_22_migration_2.php'     => 'A2',
+            '20200909.024119_4444_4444_migration_2.php' => 'A4',
+            '20200923.040608_0_0_migration_3.php'       => 'C',
+            '20200909.030203_1_1_migration_1.php'       => 'B1',
+        ];
+        $stub = file_get_contents(__DIR__ . '/../files/migration.stub');
+        foreach ($files as $name => $class) {
+            file_put_contents(__DIR__ . "/../files/$name", sprintf($stub, $class));
+        }
+
+        $migrations = $this->repository->getMigrations();
+        $classes = array_map(
+            static function ($migration) {
+                return get_class($migration);
+            },
+            array_values($migrations)
+        );
+
+        $this->assertSame(['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'C'], $classes);
+    }
+
+    public function testIsConfigured(): void
+    {
+        $this->assertFalse($this->migrator->isConfigured());
+
+        $this->migrator->configure();
+        $this->assertTrue($this->migrator->isConfigured());
+    }
+
     public function testConfigure(): void
     {
         $this->assertFalse($this->migrator->isConfigured());
@@ -35,6 +72,20 @@ abstract class MigratorTest extends BaseTest
         $this->migrator->configure();
     }
 
+    public function testConfiguredTableStructure(): void
+    {
+        $this->migrator->configure();
+        $table = $this->db->table('migrations');
+
+        $this->assertTrue($table->hasColumn('id'));
+        $this->assertTrue($table->hasColumn('migration'));
+        $this->assertTrue($table->hasColumn('time_executed'));
+        $this->assertTrue($table->hasColumn('created_at'));
+
+        $this->assertFalse($table->hasIndex(['migration']));
+        $this->assertTrue($table->hasIndex(['migration', 'created_at']));
+    }
+
     public function testGetEmptyMigrations(): void
     {
         $this->migrator->configure();
@@ -46,9 +97,14 @@ abstract class MigratorTest extends BaseTest
         $this->assertSame($this->repository, $this->migrator->getRepository());
     }
 
+    public function testConfig(): void
+    {
+        $this->assertSame($this->migrationConfig, $this->migrator->getConfig());
+    }
+
     public function testRunUnconfigured(): void
     {
-        $this->expectException(\Spiral\Migrations\Exception\MigrationException::class);
+        $this->expectException(MigrationException::class);
         $this->expectExceptionMessage("Unable to run migration, Migrator not configured");
 
         $this->migrator->run();
@@ -56,7 +112,7 @@ abstract class MigratorTest extends BaseTest
 
     public function testRollbackUnconfigured(): void
     {
-        $this->expectException(\Spiral\Migrations\Exception\MigrationException::class);
+        $this->expectException(MigrationException::class);
         $this->expectExceptionMessage("Unable to run migration, Migrator not configured");
 
         $this->migrator->rollback();
@@ -77,7 +133,6 @@ abstract class MigratorTest extends BaseTest
     {
         $this->expectException(\Spiral\Migrations\Exception\CapsuleException::class);
         $this->expectExceptionMessageMatches("/Migration operation expected to be an instance of `.+`, `.+` given/");
-
         $capsule = new Capsule($this->db);
 
         $capsule->execute([
@@ -87,7 +142,7 @@ abstract class MigratorTest extends BaseTest
 
     public function testNoState(): void
     {
-        $this->expectException(\Spiral\Migrations\Exception\MigrationException::class);
+        $this->expectException(MigrationException::class);
         $this->expectExceptionMessage("Unable to get migration state, no state are set");
 
         $x = new TestMigration();
@@ -96,7 +151,7 @@ abstract class MigratorTest extends BaseTest
 
     public function testNoCapsule(): void
     {
-        $this->expectException(\Spiral\Migrations\Exception\MigrationException::class);
+        $this->expectException(MigrationException::class);
         $this->expectExceptionMessage("Unable to get table blueprint, no capsule are set");
 
         $x = new TestMigration();
@@ -105,7 +160,7 @@ abstract class MigratorTest extends BaseTest
 
     public function testNoCapsule2(): void
     {
-        $this->expectException(\Spiral\Migrations\Exception\MigrationException::class);
+        $this->expectException(MigrationException::class);
         $this->expectExceptionMessage("Unable to get database, no capsule are set");
 
         $x = new TestMigration();
