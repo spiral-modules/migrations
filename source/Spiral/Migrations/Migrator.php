@@ -107,14 +107,7 @@ class Migrator extends Component implements SingletonInterface
         }
 
         usort($result, function ($a, $b) {
-            $aTimeCreated = $a->getState()->getTimeCreated();
-            $bTimeCreated = $b->getState()->getTimeCreated();
-
-            if ($aTimeCreated == $bTimeCreated) {
-                return 0;
-            }
-
-            return ($aTimeCreated < $bTimeCreated) ? -1 : 1;
+            return $a->getState()->getTimeCreated() <=> $b->getState()->getTimeCreated();
         });
 
 
