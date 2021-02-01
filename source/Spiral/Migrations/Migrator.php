@@ -106,6 +106,11 @@ class Migrator extends Component implements SingletonInterface
             $result[] = $migration->withState($this->resolveStatus($migration->getState()));
         }
 
+        usort($result, function ($a, $b) {
+            return $a->getState()->getTimeCreated() <=> $b->getState()->getTimeCreated();
+        });
+
+
         return $result;
     }
 
