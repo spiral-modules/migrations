@@ -16,6 +16,7 @@ use Spiral\Database\DatabaseManager;
 use Spiral\Database\Table;
 use Spiral\Migrations\Config\MigrationConfig;
 use Spiral\Migrations\Exception\MigrationException;
+use Spiral\Migrations\Migrator\MigrationsTable;
 
 final class Migrator implements MigratorInterface
 {
@@ -117,25 +118,8 @@ final class Migrator implements MigratorInterface
      */
     private function createMigrationTable(Database $database): void
     {
-        $table = $database->table($this->config->getTable());
-        $schema = $table->getSchema();
-
-        //
-        // Schema update will automatically sync all needed data
-        //
-        $schema->primary('id');
-        $schema->string('migration', 191)->nullable(false);
-        $schema->datetime('time_executed')->datetime();
-        $schema->datetime('created_at')->datetime();
-
-        $schema->index(['migration', 'created_at'])
-            ->unique(true);
-
-        if ($schema->hasIndex(['migration'])) {
-            $schema->dropIndex(['migration']);
-        }
-
-        $schema->save();
+        $table = new MigrationsTable($database, $this->config->getTable());
+        $table->actualize();
     }
 
     /**
@@ -284,23 +268,9 @@ final class Migrator implements MigratorInterface
      */
     private function checkMigrationTableStructure(Database $db): bool
     {
-        if (!$db->hasTable($this->config->getTable())) {
-            return false;
-        }
+        $table = new MigrationsTable($db, $this->config->getTable());
 
-        $table = $db->table($this->config->getTable())->getSchema();
-
-        foreach (self::MIGRATION_TABLE_FIELDS_LIST as $field) {
-            if (!$table->hasColumn($field)) {
-                return false;
-            }
-        }
-
-        if (!$table->hasIndex(['migration', 'created_at'])) {
-            return false;
-        }
-
-        return true;
+        return $table->isPresent();
     }
 
     /**
