@@ -261,7 +261,7 @@ final class Migrator
      * @param MigrationInterface $migration
      * @return State
      */
-    protected function resolveState(MigrationInterface $migration): State
+    private function resolveState(MigrationInterface $migration): State
     {
         $db = $this->dbal->database($migration->getDatabase());
 
@@ -283,12 +283,12 @@ final class Migrator
      * @param string|null $database
      * @return Table
      */
-    protected function migrationTable(string $database = null): Table
+    private function migrationTable(string $database = null): Table
     {
         return $this->dbal->database($database)->table($this->config->getTable());
     }
 
-    protected function checkMigrationTableStructure(Database $db): bool
+    private function checkMigrationTableStructure(Database $db): bool
     {
         $table = $db->table($this->config->getTable());
 
@@ -312,7 +312,7 @@ final class Migrator
      *
      * @return array|null
      */
-    protected function fetchMigrationData(MigrationInterface $migration): ?array
+    private function fetchMigrationData(MigrationInterface $migration): ?array
     {
         $migrationData = $this->migrationTable($migration->getDatabase())
             ->select('id', 'time_executed', 'created_at')
@@ -328,7 +328,7 @@ final class Migrator
         return is_array($migrationData) ? $migrationData : [];
     }
 
-    protected function restoreMigrationData(): void
+    private function restoreMigrationData(): void
     {
         foreach ($this->repository->getMigrations() as $migration) {
             $migrationData = $this->migrationTable($migration->getDatabase())
@@ -359,7 +359,7 @@ final class Migrator
      * @param iterable<Database>|null $databases
      * @return bool
      */
-    protected function isRestoreMigrationDataRequired(iterable $databases = null): bool
+    private function isRestoreMigrationDataRequired(iterable $databases = null): bool
     {
         $databases = $databases ?? $this->dbal->getDatabases();
 
@@ -378,7 +378,7 @@ final class Migrator
         return false;
     }
 
-    protected function getMigrationCreatedAtForDb(MigrationInterface $migration): \DateTimeInterface
+    private function getMigrationCreatedAtForDb(MigrationInterface $migration): \DateTimeInterface
     {
         $db = $this->dbal->database($migration->getDatabase());
 
