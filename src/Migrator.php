@@ -17,7 +17,7 @@ use Spiral\Database\Table;
 use Spiral\Migrations\Config\MigrationConfig;
 use Spiral\Migrations\Exception\MigrationException;
 
-final class Migrator
+final class Migrator implements MigratorInterface
 {
     private const DB_DATE_FORMAT = 'Y-m-d H:i:s';
 
@@ -69,9 +69,7 @@ final class Migrator
     }
 
     /**
-     * Check if all related databases are configures with migrations.
-     *
-     * @return bool
+     * {@inheritDoc}
      */
     public function isConfigured(): bool
     {
@@ -85,7 +83,7 @@ final class Migrator
     }
 
     /**
-     * Configure all related databases with migration table.
+     * {@inheritDoc}
      */
     public function configure(): void
     {
@@ -158,13 +156,7 @@ final class Migrator
     }
 
     /**
-     * Execute one migration and return it's instance.
-     *
-     * @param CapsuleInterface $capsule
-     *
-     * @return null|MigrationInterface
-     *
-     * @throws MigrationException
+     * {@inheritDoc}
      */
     public function run(CapsuleInterface $capsule = null): ?MigrationInterface
     {
@@ -215,11 +207,8 @@ final class Migrator
     }
 
     /**
-     * Rollback last migration and return it's instance.
-     *
-     * @param CapsuleInterface $capsule
-     * @return null|MigrationInterface
-     *
+     * @param CapsuleInterface|null $capsule
+     * @return MigrationInterface|null
      * @throws \Throwable
      */
     public function rollback(CapsuleInterface $capsule = null): ?MigrationInterface
@@ -260,6 +249,7 @@ final class Migrator
      *
      * @param MigrationInterface $migration
      * @return State
+     * @throws \Exception
      */
     private function resolveState(MigrationInterface $migration): State
     {
@@ -288,6 +278,10 @@ final class Migrator
         return $this->dbal->database($database)->table($this->config->getTable());
     }
 
+    /**
+     * @param Database $db
+     * @return bool
+     */
     private function checkMigrationTableStructure(Database $db): bool
     {
         $table = $db->table($this->config->getTable());
