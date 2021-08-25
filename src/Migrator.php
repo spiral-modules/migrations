@@ -93,27 +93,51 @@ final class Migrator
             return;
         }
 
-        foreach ($this->dbal->getDatabases() as $db) {
-            $schema = $db->table($this->config->getTable())->getSchema();
-
-            // Schema update will automatically sync all needed data
-            $schema->primary('id');
-            $schema->string('migration', 191)->nullable(false);
-            $schema->datetime('time_executed')->datetime();
-            $schema->datetime('created_at')->datetime();
-            $schema->index(['migration', 'created_at'])
-                ->unique(true);
-
-            if ($schema->hasIndex(['migration'])) {
-                $schema->dropIndex(['migration']);
-            }
-
-            $schema->save();
-        }
+        $this->createMigrationTables($this->dbal->getDatabases());
 
         if ($this->isRestoreMigrationDataRequired()) {
             $this->restoreMigrationData();
         }
+    }
+
+    /**
+     * Create migration table inside given databases list
+     *
+     * @param iterable<Database> $databases
+     */
+    private function createMigrationTables(iterable $databases): void
+    {
+        foreach ($databases as $database) {
+            $this->createMigrationTable($database);
+        }
+    }
+
+    /**
+     * Create migration table inside given database
+     *
+     * @param Database $database
+     */
+    private function createMigrationTable(Database $database): void
+    {
+        $table = $database->table($this->config->getTable());
+        $schema = $table->getSchema();
+
+        //
+        // Schema update will automatically sync all needed data
+        //
+        $schema->primary('id');
+        $schema->string('migration', 191)->nullable(false);
+        $schema->datetime('time_executed')->datetime();
+        $schema->datetime('created_at')->datetime();
+
+        $schema->index(['migration', 'created_at'])
+            ->unique(true);
+
+        if ($schema->hasIndex(['migration'])) {
+            $schema->dropIndex(['migration']);
+        }
+
+        $schema->save();
     }
 
     /**
@@ -124,8 +148,9 @@ final class Migrator
     public function getMigrations(): array
     {
         $result = [];
+
         foreach ($this->repository->getMigrations() as $migration) {
-            //Populating migration state and execution time (if any)
+            // Populating migration state and execution time (if any)
             $result[] = $migration->withState($this->resolveState($migration));
         }
 
@@ -331,11 +356,14 @@ final class Migrator
     /**
      * Check if some data modification required
      *
+     * @param iterable<Database>|null $databases
      * @return bool
      */
-    protected function isRestoreMigrationDataRequired(): bool
+    protected function isRestoreMigrationDataRequired(iterable $databases = null): bool
     {
-        foreach ($this->dbal->getDatabases() as $db) {
+        $databases = $databases ?? $this->dbal->getDatabases();
+
+        foreach ($databases as $db) {
             $table = $db->table($this->config->getTable());
 
             if (
