@@ -296,6 +296,16 @@ final class Migrator implements MigratorInterface
         return is_array($migrationData) ? $migrationData : [];
     }
 
+    /**
+     * This method updates the state of the empty (null) "created_at" fields for
+     * each entry in the migration table within the
+     * issue {@link https://github.com/spiral/migrations/issues/13}.
+     *
+     * TODO It is worth noting that this method works in an extremely suboptimal
+     *      way and requires optimizations.
+     *
+     * @return void
+     */
     private function restoreMigrationData(): void
     {
         foreach ($this->repository->getMigrations() as $migration) {
@@ -322,7 +332,10 @@ final class Migrator implements MigratorInterface
     }
 
     /**
-     * Check if some data modification required
+     * Check if some data modification required.
+     *
+     * This method checks for empty (null) "created_at" fields created within
+     * the issue {@link https://github.com/spiral/migrations/issues/13}.
      *
      * @param iterable<Database>|null $databases
      * @return bool
@@ -346,14 +359,26 @@ final class Migrator implements MigratorInterface
         return false;
     }
 
+    /**
+     * Creates a new date object based on the database timezone and the
+     * migration creation date.
+     *
+     * @param MigrationInterface $migration
+     * @return \DateTimeInterface
+     */
     private function getMigrationCreatedAtForDb(MigrationInterface $migration): \DateTimeInterface
     {
         $db = $this->dbal->database($migration->getDatabase());
 
-        return \DateTimeImmutable::createFromFormat(
-            self::DB_DATE_FORMAT,
-            $migration->getState()->getTimeCreated()->format(self::DB_DATE_FORMAT),
-            $db->getDriver()->getTimezone()
-        );
+        $createdAt = $migration->getState()
+            ->getTimeCreated()
+            ->format(self::DB_DATE_FORMAT)
+        ;
+
+        $timezone = $db->getDriver()
+            ->getTimezone()
+        ;
+
+        return \DateTimeImmutable::createFromFormat(self::DB_DATE_FORMAT, $createdAt, $timezone);
     }
 }
