@@ -16,13 +16,6 @@ use Spiral\Migrations\Exception\MigrationException;
 interface MigratorInterface
 {
     /**
-     * Check if all related databases are configures with migrations.
-     *
-     * @return bool
-     */
-    public function isConfigured(): bool;
-
-    /**
      * Configure all related databases with migration table.
      *
      * @return void
