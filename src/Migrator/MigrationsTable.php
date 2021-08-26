@@ -21,7 +21,7 @@ use Spiral\Database\Schema\AbstractTable;
  * @internal MigrationsTable is an internal library class, please do not use it in your code.
  * @psalm-internal Spiral\Migrations
  */
-final class MigrationsTable
+class MigrationsTable
 {
     /**
      * List of fields in the migration table. An implementation is specified in
