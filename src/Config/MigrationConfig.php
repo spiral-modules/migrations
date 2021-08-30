@@ -11,11 +11,26 @@ declare(strict_types=1);
 
 namespace Spiral\Migrations\Config;
 
+use JetBrains\PhpStorm\ArrayShape;
 use Spiral\Core\InjectableConfig;
 
 final class MigrationConfig extends InjectableConfig
 {
+    /**
+     * @internal This is an internal config section name. Please, do not use
+     *           this constant.
+     */
     public const CONFIG = 'migration';
+
+    /**
+     * @param array $config
+     */
+    public function __construct(
+        #[ArrayShape(['directory' => 'string', 'table' => 'string', 'safe' => 'bool'])]
+        array $config = []
+    ) {
+        parent::__construct($config);
+    }
 
     /**
      * Migrations directory.
