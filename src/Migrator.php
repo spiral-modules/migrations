@@ -17,6 +17,7 @@ use Spiral\Database\Table;
 use Spiral\Migrations\Config\MigrationConfig;
 use Spiral\Migrations\Exception\MigrationException;
 use Spiral\Migrations\Migration\State;
+use Spiral\Migrations\Migration\Status;
 use Spiral\Migrations\MigrationInterface;
 use Spiral\Migrations\Migrator\MigrationsTable;
 
@@ -76,13 +77,15 @@ final class Migrator implements MigratorInterface
      */
     public function isConfigured(): bool
     {
-        foreach ($this->dbal->getDatabases() as $db) {
+        $databases = $this->getDatabases();
+
+        foreach ($databases as $db) {
             if (!$this->checkMigrationTableStructure($db)) {
                 return false;
             }
         }
 
-        return !$this->isRestoreMigrationDataRequired();
+        return !$this->isRestoreMigrationDataRequired($databases);
     }
 
     /**
@@ -94,23 +97,35 @@ final class Migrator implements MigratorInterface
             return;
         }
 
-        $this->createMigrationTables($this->dbal->getDatabases());
+        $databases = $this->getDatabases();
 
-        if ($this->isRestoreMigrationDataRequired()) {
+        foreach ($databases as $database) {
+            $this->createMigrationTable($database);
+        }
+
+        if ($this->isRestoreMigrationDataRequired($databases)) {
             $this->restoreMigrationData();
         }
     }
 
     /**
-     * Create migration table inside given databases list
+     * Get all databases for which there are migrations.
      *
-     * @param iterable<Database> $databases
+     * @return array<Database>
      */
-    private function createMigrationTables(iterable $databases): void
+    private function getDatabases(): array
     {
-        foreach ($databases as $database) {
-            $this->createMigrationTable($database);
+        $result = [];
+
+        foreach ($this->repository->getMigrations() as $migration) {
+            $database = $this->dbal->database($migration->getDatabase());
+
+            if (! isset($result[$database->getName()])) {
+                $result[$database->getName()] = $database;
+            }
         }
+
+        return $result;
     }
 
     /**
@@ -205,8 +220,8 @@ final class Migrator implements MigratorInterface
         }
 
         /** @var MigrationInterface $migration */
-        foreach (array_reverse($this->getMigrations()) as $migration) {
-            if ($migration->getState()->getStatus() !== State::STATUS_EXECUTED) {
+        foreach (\array_reverse($this->getMigrations()) as $migration) {
+            if ($migration->getState()->getStatus() !== Status::STATUS_EXECUTED) {
                 continue;
             }
 
@@ -245,11 +260,11 @@ final class Migrator implements MigratorInterface
         $data = $this->fetchMigrationData($migration);
 
         if (empty($data['time_executed'])) {
-            return $migration->getState()->withStatus(State::STATUS_PENDING);
+            return $migration->getState()->withStatus(Status::STATUS_PENDING);
         }
 
         return $migration->getState()->withStatus(
-            State::STATUS_EXECUTED,
+            Status::STATUS_EXECUTED,
             new \DateTimeImmutable($data['time_executed'], $db->getDriver()->getTimezone())
         );
     }
@@ -340,13 +355,11 @@ final class Migrator implements MigratorInterface
      * This method checks for empty (null) "created_at" fields created within
      * the issue {@link https://github.com/spiral/migrations/issues/13}.
      *
-     * @param iterable<Database>|null $databases
+     * @param iterable<Database> $databases
      * @return bool
      */
-    private function isRestoreMigrationDataRequired(iterable $databases = null): bool
+    private function isRestoreMigrationDataRequired(iterable $databases): bool
     {
-        $databases = $databases ?? $this->dbal->getDatabases();
-
         foreach ($databases as $db) {
             $table = $db->table($this->config->getTable());
 
