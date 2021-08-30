@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Spiral\Migrations\Config;
 
-use JetBrains\PhpStorm\ArrayShape;
 use Spiral\Core\InjectableConfig;
 
 final class MigrationConfig extends InjectableConfig
@@ -23,12 +22,10 @@ final class MigrationConfig extends InjectableConfig
     public const CONFIG = 'migration';
 
     /**
-     * @param array $config
+     * @param array{directory?: string|null, table?: string|null, safe?: bool|null} $config
      */
-    public function __construct(
-        #[ArrayShape(['directory' => 'string', 'table' => 'string', 'safe' => 'bool'])]
-        array $config = []
-    ) {
+    public function __construct(array $config = [])
+    {
         parent::__construct($config);
     }
 

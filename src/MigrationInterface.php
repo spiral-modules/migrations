@@ -12,8 +12,9 @@ declare(strict_types=1);
 namespace Spiral\Migrations;
 
 use Spiral\Migrations\Exception\MigrationException;
+use Spiral\Migrations\Migration\SynchronizedInterface;
 
-interface MigrationInterface
+interface MigrationInterface extends SynchronizedInterface
 {
     /**
      * Target migration database. Each migration must be specific
@@ -30,23 +31,6 @@ interface MigrationInterface
      * @return self
      */
     public function withCapsule(CapsuleInterface $capsule): MigrationInterface;
-
-    /**
-     * Alter associated migration state (new migration instance to be created).
-     *
-     * @param State $state
-     * @return self
-     */
-    public function withState(State $state): MigrationInterface;
-
-    /**
-     * Get migration state.
-     *
-     * @return State
-     *
-     * @throws MigrationException When no state is presented.
-     */
-    public function getState(): State;
 
     /**
      * Up migration.

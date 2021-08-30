@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Spiral\Migrations;
+namespace Spiral\Migrations\Migration;
 
 /**
  * Migration meta information specific to current environment
@@ -34,9 +34,9 @@ final class State
     private $timeExecuted;
 
     /**
-     * @param string             $name
+     * @param string $name
      * @param \DateTimeInterface $timeCreated
-     * @param int                $status
+     * @param int $status
      * @param \DateTimeInterface $timeExecuted
      */
     public function __construct(
@@ -87,20 +87,5 @@ final class State
     public function getTimeExecuted(): ?\DateTimeInterface
     {
         return $this->timeExecuted;
-    }
-
-    /**
-     * @param int                     $status
-     * @param \DateTimeInterface|null $timeExecuted
-     *
-     * @return State
-     */
-    public function withStatus(int $status, \DateTimeInterface $timeExecuted = null): State
-    {
-        $state = clone $this;
-        $state->status = $status;
-        $state->timeExecuted = $timeExecuted;
-
-        return $state;
     }
 }

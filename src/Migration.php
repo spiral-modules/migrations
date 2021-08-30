@@ -13,11 +13,8 @@ namespace Spiral\Migrations;
 
 use Spiral\Database\Database;
 use Spiral\Database\DatabaseInterface;
-use Spiral\Migrations\CapsuleInterface;
 use Spiral\Migrations\Exception\MigrationException;
-use Spiral\Migrations\MigrationInterface;
-use Spiral\Migrations\State;
-use Spiral\Migrations\TableBlueprint;
+use Spiral\Migrations\Migration\State;
 
 /**
  * Simple migration class with shortcut for database and blueprint instances.
@@ -34,7 +31,7 @@ abstract class Migration implements MigrationInterface
     private $capsule;
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getDatabase(): ?string
     {
