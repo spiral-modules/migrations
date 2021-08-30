@@ -16,6 +16,7 @@ use Spiral\Database\DatabaseManager;
 use Spiral\Database\Table;
 use Spiral\Migrations\Config\MigrationConfig;
 use Spiral\Migrations\Exception\MigrationException;
+use Spiral\Migrations\MigrationInterface;
 use Spiral\Migrations\Migrator\MigrationsTable;
 
 final class Migrator implements MigratorInterface
@@ -70,7 +71,7 @@ final class Migrator implements MigratorInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @return bool
      */
     public function isConfigured(): bool
     {
@@ -126,6 +127,7 @@ final class Migrator implements MigratorInterface
      * Get every available migration with valid meta information.
      *
      * @return MigrationInterface[]
+     * @throws \Exception
      */
     public function getMigrations(): array
     {

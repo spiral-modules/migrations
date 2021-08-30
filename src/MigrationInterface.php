@@ -16,7 +16,8 @@ use Spiral\Migrations\Exception\MigrationException;
 interface MigrationInterface
 {
     /**
-     * Target migration database. Each migration must be specific to one database only.
+     * Target migration database. Each migration must be specific
+     * to one database only.
      *
      * @return null|string
      */

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Spiral\Migrations;
 
 use Spiral\Migrations\Exception\RepositoryException;
+use Spiral\Migrations\MigrationInterface;
 
 interface RepositoryInterface
 {

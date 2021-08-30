@@ -50,17 +50,17 @@ class MigrationsTable
     /**
      * @var Database
      */
-    private Database $db;
+    private $db;
 
     /**
      * @var string
      */
-    private string $name;
+    private $name;
 
     /**
      * @var AbstractTable
      */
-    private AbstractTable $schema;
+    private $schema;
 
     /**
      * @param Database $db
