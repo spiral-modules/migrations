@@ -22,7 +22,7 @@ interface ProvidesSyncStateInterface
      * Alter associated migration state (new migration instance to be created).
      *
      * @param State $state
-     * @return self
+     * @return static
      */
     public function withState(State $state): self;
 
