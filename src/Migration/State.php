@@ -12,43 +12,69 @@ declare(strict_types=1);
 namespace Spiral\Migrations\Migration;
 
 /**
- * Migration meta information specific to current environment
+ * Migration meta information specific to current environment.
+ *
+ * @psalm-import-type StatusEnum from Status
+ *
+ * @internal State is an internal library class, please do not use it in your code.
+ * @psalm-internal Spiral\Migrations
  */
 final class State
 {
-    // Migration status
-    public const STATUS_UNDEFINED = -1;
-    public const STATUS_PENDING   = 0;
-    public const STATUS_EXECUTED  = 1;
-
-    /** @var string */
-    private $name;
-
-    /** @var int */
-    private $status;
-
-    /** @var \DateTimeInterface */
-    private $timeCreated;
-
-    /** @var \DateTimeInterface|null */
-    private $timeExecuted;
+    /**
+     * @deprecated Please use {@see Status::STATUS_UNDEFINED} instead.
+     * @var StatusEnum
+     */
+    public const STATUS_UNDEFINED = Status::STATUS_UNDEFINED;
 
     /**
-     * @param string $name
-     * @param \DateTimeInterface $timeCreated
-     * @param int $status
-     * @param \DateTimeInterface $timeExecuted
+     * @deprecated Please use {@see Status::STATUS_PENDING} instead.
+     * @var StatusEnum
+     */
+    public const STATUS_PENDING   = Status::STATUS_PENDING;
+
+    /**
+     * @deprecated Please use {@see Status::STATUS_EXECUTED} instead.
+     * @var StatusEnum
+     */
+    public const STATUS_EXECUTED  = Status::STATUS_EXECUTED;
+
+    /**
+     * @var non-empty-string
+     */
+    private $name;
+
+    /**
+     * @var StatusEnum
+     */
+    private $status;
+
+    /**
+     * @var \DateTimeInterface
+     */
+    private $createdAt;
+
+    /**
+     * @var \DateTimeInterface|null
+     */
+    private $executedAt;
+
+    /**
+     * @param non-empty-string $name
+     * @param \DateTimeInterface $createdAt
+     * @param StatusEnum $status
+     * @param \DateTimeInterface|null $executedAt
      */
     public function __construct(
         string $name,
-        \DateTimeInterface $timeCreated,
-        int $status = self::STATUS_UNDEFINED,
-        \DateTimeInterface $timeExecuted = null
+        \DateTimeInterface $createdAt,
+        int $status = Status::STATUS_UNDEFINED,
+        \DateTimeInterface $executedAt = null
     ) {
         $this->name = $name;
         $this->status = $status;
-        $this->timeCreated = $timeCreated;
-        $this->timeExecuted = $timeExecuted;
+        $this->createdAt = $createdAt;
+        $this->executedAt = $executedAt;
     }
 
     /**
@@ -76,7 +102,7 @@ final class State
      */
     public function getTimeCreated(): \DateTimeInterface
     {
-        return $this->timeCreated;
+        return $this->createdAt;
     }
 
     /**
@@ -86,6 +112,20 @@ final class State
      */
     public function getTimeExecuted(): ?\DateTimeInterface
     {
-        return $this->timeExecuted;
+        return $this->executedAt;
+    }
+
+    /**
+     * @param StatusEnum $status
+     * @param \DateTimeInterface|null $executedAt
+     * @return State
+     */
+    public function withStatus(int $status, \DateTimeInterface $executedAt = null): State
+    {
+        $state = clone $this;
+        $state->status = $status;
+        $state->executedAt = $executedAt;
+
+        return $state;
     }
 }

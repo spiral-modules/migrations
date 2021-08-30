@@ -14,6 +14,8 @@ namespace Spiral\Migrations;
 use Spiral\Database\Database;
 use Spiral\Database\DatabaseInterface;
 use Spiral\Migrations\Exception\MigrationException;
+use Spiral\Migrations\Migration\DefinitionInterface;
+use Spiral\Migrations\Migration\ProvidesSyncStateInterface;
 use Spiral\Migrations\Migration\State;
 
 /**
@@ -41,7 +43,7 @@ abstract class Migration implements MigrationInterface
     /**
      * {@inheritdoc}
      */
-    public function withCapsule(CapsuleInterface $capsule): MigrationInterface
+    public function withCapsule(CapsuleInterface $capsule): DefinitionInterface
     {
         $migration = clone $this;
         $migration->capsule = $capsule;
@@ -52,7 +54,7 @@ abstract class Migration implements MigrationInterface
     /**
      * {@inheritdoc}
      */
-    public function withState(State $state): MigrationInterface
+    public function withState(State $state): ProvidesSyncStateInterface
     {
         $migration = clone $this;
         $migration->state = $state;

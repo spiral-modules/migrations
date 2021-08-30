@@ -12,12 +12,11 @@ declare(strict_types=1);
 namespace Spiral\Migrations\Migration;
 
 use Spiral\Migrations\Exception\MigrationException;
-use Spiral\Migrations\MigrationInterface;
 
 /**
  * An interface for migrations providing information about the migration status.
  */
-interface SynchronizedInterface
+interface ProvidesSyncStateInterface
 {
     /**
      * Alter associated migration state (new migration instance to be created).
@@ -31,7 +30,6 @@ interface SynchronizedInterface
      * Get migration state.
      *
      * @return State
-     *
      * @throws MigrationException When no state is presented.
      */
     public function getState(): State;
