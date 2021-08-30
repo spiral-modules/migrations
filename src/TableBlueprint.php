@@ -22,7 +22,7 @@ use Spiral\Migrations\Operation;
 final class TableBlueprint
 {
     /** @var CapsuleInterface */
-    private $capsule = null;
+    private $capsule;
 
     /** @var bool */
     private $executed = false;
