@@ -25,13 +25,6 @@ final class Migrator implements MigratorInterface
 {
     private const DB_DATE_FORMAT = 'Y-m-d H:i:s';
 
-    private const MIGRATION_TABLE_FIELDS_LIST = [
-        'id',
-        'migration',
-        'time_executed',
-        'created_at'
-    ];
-
     /** @var MigrationConfig */
     private $config;
 
