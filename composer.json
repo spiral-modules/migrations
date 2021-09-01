@@ -18,6 +18,9 @@
         "spiral/reactor": "^2.7"
     },
     "autoload": {
+        "files": [
+            "src/polyfill.php"
+        ],
         "psr-4": {
             "Spiral\\Migrations\\": "src"
         }
