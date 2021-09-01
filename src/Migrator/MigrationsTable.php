@@ -29,7 +29,7 @@ class MigrationsTable
      *
      * @var array<non-empty-string>
      */
-    private const MIGRATION_TABLE_FIELDS_LIST = [
+    private const MIGRATION_TABLE_FIELDS = [
         'id',
         'migration',
         'time_executed',
@@ -42,7 +42,7 @@ class MigrationsTable
      *
      * @var array<non-empty-string>
      */
-    private const MIGRATION_TABLE_INDICES_LIST = [
+    private const MIGRATION_TABLE_INDICES = [
         'migration',
         'created_at'
     ];
@@ -80,8 +80,8 @@ class MigrationsTable
      *
      * Please note that if you change this migration, you will also need to
      * change the list of fields in this migration specified in
-     * the {@see MigrationsTable::MIGRATION_TABLE_FIELDS_LIST}
-     * and {@see MigrationsTable::MIGRATION_TABLE_INDICES_LIST} constants.
+     * the {@see MigrationsTable::MIGRATION_TABLE_FIELDS}
+     * and {@see MigrationsTable::MIGRATION_TABLE_INDICES} constants.
      *
      * @return void
      */
@@ -144,7 +144,7 @@ class MigrationsTable
      */
     private function isNecessaryColumnsExists(): bool
     {
-        foreach (self::MIGRATION_TABLE_FIELDS_LIST as $field) {
+        foreach (self::MIGRATION_TABLE_FIELDS as $field) {
             if (!$this->schema->hasColumn($field)) {
                 return false;
             }
@@ -161,6 +161,6 @@ class MigrationsTable
      */
     private function isNecessaryIndicesExists(): bool
     {
-        return $this->schema->hasIndex(self::MIGRATION_TABLE_INDICES_LIST);
+        return $this->schema->hasIndex(self::MIGRATION_TABLE_INDICES);
     }
 }
