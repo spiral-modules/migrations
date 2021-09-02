@@ -9,7 +9,9 @@
 
 declare(strict_types=1);
 
-namespace Spiral\Migrations\Migration;
+namespace Spiral\Migrations;
+
+use Spiral\Migrations\Migration\Status;
 
 /**
  * Migration meta information specific to current environment.

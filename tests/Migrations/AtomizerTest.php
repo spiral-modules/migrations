@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Spiral\Migrations\Tests;
 
 use Spiral\Migrations\Migration;
-use Spiral\Migrations\Migration\State;
+use Spiral\Migrations\State;
 
 abstract class AtomizerTest extends BaseTest
 {

@@ -13,7 +13,7 @@ namespace Spiral\Migrations\Tests;
 
 use Spiral\Migrations\Capsule;
 use Spiral\Migrations\Exception\MigrationException;
-use Spiral\Migrations\Migration\State;
+use Spiral\Migrations\State;
 
 abstract class MigratorTest extends BaseTest
 {

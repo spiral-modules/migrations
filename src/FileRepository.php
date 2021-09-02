@@ -17,7 +17,7 @@ use Spiral\Files\Files;
 use Spiral\Files\FilesInterface;
 use Spiral\Migrations\Config\MigrationConfig;
 use Spiral\Migrations\Exception\RepositoryException;
-use Spiral\Migrations\Migration\State;
+use Spiral\Migrations\State;
 use Spiral\Tokenizer\Reflection\ReflectionFile;
 
 /**
