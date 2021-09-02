@@ -16,5 +16,4 @@ use Spiral\Migrations\Migration\ProvidesSyncStateInterface;
 
 interface MigrationInterface extends ProvidesSyncStateInterface, DefinitionInterface
 {
-
 }

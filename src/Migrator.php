@@ -18,7 +18,6 @@ use Spiral\Migrations\Config\MigrationConfig;
 use Spiral\Migrations\Exception\MigrationException;
 use Spiral\Migrations\Migration\State;
 use Spiral\Migrations\Migration\Status;
-use Spiral\Migrations\MigrationInterface;
 use Spiral\Migrations\Migrator\MigrationsTable;
 
 final class Migrator implements MigratorInterface
@@ -160,7 +159,9 @@ final class Migrator implements MigratorInterface
         }
 
         foreach ($this->getMigrations() as $migration) {
-            if ($migration->getState()->getStatus() !== State::STATUS_PENDING) {
+            $state = $migration->getState();
+
+            if ($state->getStatus() !== State::STATUS_PENDING) {
                 continue;
             }
 
@@ -174,7 +175,7 @@ final class Migrator implements MigratorInterface
 
                 $this->migrationTable($migration->getDatabase())->insertOne(
                     [
-                        'migration' => $migration->getState()->getName(),
+                        'migration' => $state->getName(),
                         'time_executed' => new \DateTime('now'),
                         'created_at' => $this->getMigrationCreatedAtForDb($migration),
                     ]
@@ -182,17 +183,18 @@ final class Migrator implements MigratorInterface
 
                 return $migration->withState($this->resolveState($migration));
             } catch (\Throwable $exception) {
+                $state = $migration->getState();
                 throw new MigrationException(
                     \sprintf(
                         'Error in the migration (%s) occurred: %s',
                         \sprintf(
                             '%s (%s)',
-                            $migration->getState()->getName(),
-                            $migration->getState()->getTimeCreated()->format(self::DB_DATE_FORMAT)
+                            $state->getName(),
+                            $state->getTimeCreated()->format(self::DB_DATE_FORMAT)
                         ),
                         $exception->getMessage()
                     ),
-                    $exception->getCode(),
+                    (int)$exception->getCode(),
                     $exception
                 );
             }

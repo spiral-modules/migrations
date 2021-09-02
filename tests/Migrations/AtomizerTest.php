@@ -30,7 +30,7 @@ abstract class AtomizerTest extends BaseTest
         $migration = $this->migrator->run();
 
         $this->assertInstanceOf(Migration::class, $migration);
-        $this->assertSame(State::STATUS_EXECUTED, $migration->getState()->getStatus());
+        $this->assertSame(Migration\Status::STATUS_EXECUTED, $migration->getState()->getStatus());
         $this->assertInstanceOf(\DateTimeInterface::class, $migration->getState()->getTimeCreated());
         $this->assertInstanceOf(\DateTimeInterface::class, $migration->getState()->getTimeExecuted());
 
