@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Spiral\Migrations\Migration;
 
 use Spiral\Migrations\Exception\MigrationException;
-use Spiral\Migrations\State;
+use Spiral\Migrations\Migration\State;
 
 /**
  * An interface for migrations providing information about the migration status.

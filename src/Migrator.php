@@ -16,7 +16,7 @@ use Spiral\Database\DatabaseManager;
 use Spiral\Database\Table;
 use Spiral\Migrations\Config\MigrationConfig;
 use Spiral\Migrations\Exception\MigrationException;
-use Spiral\Migrations\State;
+use Spiral\Migrations\Migration\State;
 use Spiral\Migrations\Migration\Status;
 use Spiral\Migrations\MigrationInterface;
 use Spiral\Migrations\Migrator\MigrationsTable;

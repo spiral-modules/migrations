@@ -16,7 +16,7 @@ use Spiral\Database\DatabaseInterface;
 use Spiral\Migrations\Exception\MigrationException;
 use Spiral\Migrations\Migration\DefinitionInterface;
 use Spiral\Migrations\Migration\ProvidesSyncStateInterface;
-use Spiral\Migrations\State;
+use Spiral\Migrations\Migration\State;
 
 /**
  * Simple migration class with shortcut for database and blueprint instances.
