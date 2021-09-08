@@ -155,13 +155,13 @@ final class Migrator implements MigratorInterface
     public function run(CapsuleInterface $capsule = null): ?MigrationInterface
     {
         if (!$this->isConfigured()) {
-            throw new MigrationException('Unable to run migration, Migrator not configured');
+            $this->configure();
         }
 
         foreach ($this->getMigrations() as $migration) {
             $state = $migration->getState();
 
-            if ($state->getStatus() !== State::STATUS_PENDING) {
+            if ($state->getStatus() !== Status::STATUS_PENDING) {
                 continue;
             }
 
