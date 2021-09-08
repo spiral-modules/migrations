@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Spiral\Migrations\Tests;
 
 use Spiral\Migrations\Migration;
-use Spiral\Migrations\State;
+use Spiral\Migrations\Migration\State;
 
 abstract class AtomizerTest extends BaseTest
 {
@@ -30,7 +30,7 @@ abstract class AtomizerTest extends BaseTest
         $migration = $this->migrator->run();
 
         $this->assertInstanceOf(Migration::class, $migration);
-        $this->assertSame(State::STATUS_EXECUTED, $migration->getState()->getStatus());
+        $this->assertSame(Migration\Status::STATUS_EXECUTED, $migration->getState()->getStatus());
         $this->assertInstanceOf(\DateTimeInterface::class, $migration->getState()->getTimeCreated());
         $this->assertInstanceOf(\DateTimeInterface::class, $migration->getState()->getTimeExecuted());
 

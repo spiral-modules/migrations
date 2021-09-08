@@ -16,14 +16,14 @@ use Spiral\Database\Schema\Reflector;
 use Spiral\Reactor\Partial\Source;
 
 /**
- * Atomizer provides ability to convert given AbstractTables and their changes into set of
- * migration commands.
+ * Atomizer provides ability to convert given AbstractTables and their changes
+ * into set of migration commands.
  */
 final class Atomizer
 {
-
     /** @var AbstractTable[] */
     protected $tables = [];
+
     /** @var RendererInterface */
     private $renderer;
 
