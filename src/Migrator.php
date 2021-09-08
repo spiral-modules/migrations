@@ -211,7 +211,7 @@ final class Migrator implements MigratorInterface
     public function rollback(CapsuleInterface $capsule = null): ?MigrationInterface
     {
         if (!$this->isConfigured()) {
-            throw new MigrationException('Unable to run migration, Migrator not configured');
+            $this->configure();
         }
 
         /** @var MigrationInterface $migration */
