@@ -49,9 +49,7 @@ abstract class MigratorTest extends BaseTest
     {
         $out = __DIR__ . '/../files/' . $file;
 
-        file_put_contents($out,
-            sprintf(file_get_contents(__DIR__ . '/../files/migration.stub'), $class)
-        );
+        file_put_contents($out, sprintf(file_get_contents(__DIR__ . '/../files/migration.stub'), $class));
 
         return $out;
     }
