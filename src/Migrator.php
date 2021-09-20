@@ -130,9 +130,7 @@ final class Migrator implements MigratorInterface
      */
     private function isReadonly(DatabaseInterface $db): bool
     {
-        $driver = $db->getDriver();
-
-        return $driver->isReadonly();
+        return $db->getDriver()->isReadonly();
     }
 
     /**
