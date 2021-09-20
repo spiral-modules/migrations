@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Spiral\Migrations;
 
 use Spiral\Database\Database;
+use Spiral\Database\DatabaseInterface;
 use Spiral\Database\DatabaseManager;
 use Spiral\Database\Table;
 use Spiral\Migrations\Config\MigrationConfig;
@@ -112,12 +113,26 @@ final class Migrator implements MigratorInterface
         foreach ($this->repository->getMigrations() as $migration) {
             $database = $this->dbal->database($migration->getDatabase());
 
-            if (! isset($result[$database->getName()])) {
+            if (!$this->isReadonly($database) && !isset($result[$database->getName()])) {
                 $result[$database->getName()] = $database;
             }
         }
 
         return $result;
+    }
+
+    /**
+     * Returns {@see true} in case that connection is readonly
+     * or {@see false} instead.
+     *
+     * @param DatabaseInterface $db
+     * @return bool
+     */
+    private function isReadonly(DatabaseInterface $db): bool
+    {
+        $driver = $db->getDriver();
+
+        return $driver->isReadonly();
     }
 
     /**
