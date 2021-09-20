@@ -57,7 +57,9 @@ class MigrationsDatabaseTest extends TestCase
             'safe'      => true,
         ]);
 
-        return new Migrator($config, $this->dbal($readonly),
+        return new Migrator(
+            $config,
+            $this->dbal($readonly),
             new FileRepository($config, new Container())
         );
     }
