@@ -135,6 +135,7 @@ abstract class MigratorTest extends BaseTest
     public function testCapsuleException(): void
     {
         $this->expectException(\Spiral\Migrations\Exception\CapsuleException::class);
+        $this->expectExceptionMessageMatches("/Migration operation expected to be an instance of `.+`, `.+` given/");
         $capsule = new Capsule($this->db);
 
         $capsule->execute([$this]);

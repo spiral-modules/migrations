@@ -305,6 +305,9 @@ abstract class AtomizerTest extends BaseTest
 
     public function testChangePrimaryKeys(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\TableException::class);
+        $this->expectExceptionMessageMatches("/Unable to set primary keys for table '.+'\.'.+', table already exists/");
+
         //Create thought migration
         $this->migrator->configure();
 

@@ -32,6 +32,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testDropNonExisted(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\TableException::class);
+        $this->expectExceptionMessageMatches("/Unable to drop table '.+'\.'.+', table does not exists/");
+
         //Create thought migration
         $this->migrator->configure();
         $this->repository->registerMigration('m', DropNonExistedMigration::class);
@@ -46,6 +49,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testCreateEmpty(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\TableException::class);
+        $this->expectExceptionMessageMatches("/Unable to create table '.+'\.'.+', no columns were added/");
+
         //Create thought migration
         $this->migrator->configure();
         $this->repository->registerMigration('m', CreateEmptyMigration::class);
@@ -60,6 +66,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testCreateDuplicate(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\TableException::class);
+        $this->expectExceptionMessageMatches("/Unable to create table '.+'\.'.+', table already exists/");
+
         //Create thought migration
         $this->migrator->configure();
 
@@ -79,6 +88,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testUpdateNonExisted(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\TableException::class);
+        $this->expectExceptionMessageMatches("/Unable to update table '.+'\.'.+', no table exists/");
+
         //Create thought migration
         $this->migrator->configure();
 
@@ -94,6 +106,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testRenameNonExisted(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\TableException::class);
+        $this->expectExceptionMessageMatches("/Unable to rename table '.+'\.'.+', table does not exists/");
+
         //Create thought migration
         $this->migrator->configure();
 
@@ -109,6 +124,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testRenameButBusy(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\TableException::class);
+        $this->expectExceptionMessageMatches("/Unable to rename table '.+'\.'.+', table '.+' already exists/");
+
         //Create thought migration
         $this->migrator->configure();
 
@@ -132,6 +150,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testDuplicateColumn(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\ColumnException::class);
+        $this->expectExceptionMessageMatches("/Unable to create column '.+'\.'.+', column already exists/");
+
         //Create thought migration
         $this->migrator->configure();
 
@@ -152,6 +173,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testDropNonExistedIndex(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\IndexException::class);
+        $this->expectExceptionMessageMatches("/Unable to drop index '.+'\.(.+), index does not exists/");
+
         //Create thought migration
         $this->migrator->configure();
 
@@ -172,6 +196,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testAlterNonExistedIndex(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\IndexException::class);
+        $this->expectExceptionMessageMatches("/Unable to alter index '.+'\.(.+), no such index/");
+
         //Create thought migration
         $this->migrator->configure();
 
@@ -192,6 +219,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testAlterNonExistedColumn(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\ColumnException::class);
+        $this->expectExceptionMessageMatches("/Unable to alter column '.+'\.'.+', column does not exists/");
+
         //Create thought migration
         $this->migrator->configure();
 
@@ -211,6 +241,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testRenameNonExistedColumn(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\ColumnException::class);
+        $this->expectExceptionMessageMatches("/Unable to rename column '.+'\.'.+', column does not exists/");
+
         //Create thought migration
         $this->migrator->configure();
 
@@ -230,6 +263,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testRenameDuplicateExistedColumn(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\ColumnException::class);
+        $this->expectExceptionMessageMatches("/Unable to rename column '.+'\.'.+', column '.+' already exists/");
+
         //Create thought migration
         $this->migrator->configure();
 
@@ -251,6 +287,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testAddForeignNoTarget(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\ForeignKeyException::class);
+        $this->expectExceptionMessageMatches("/Unable to add foreign key 'tests_sample'.'column', foreign table 'target' does not exists/");
+
         //Create thought migration
         $this->migrator->configure();
 
@@ -272,6 +311,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testAddForeignNoTargetColumn(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\ForeignKeyException::class);
+        $this->expectExceptionMessageMatches("/Unable to add foreign key '.+'\.'.+', foreign column '.+'\.'.+' does not exists/");
+
         //Create thought migration
         $this->migrator->configure();
 
@@ -297,6 +339,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testAlterForeignNoFK(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\ForeignKeyException::class);
+        $this->expectExceptionMessageMatches("/Unable to alter foreign key '.+'\.(.+), key does not exists/");
+
         //Create thought migration
         $this->migrator->configure();
 
@@ -317,6 +362,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testAlterForeignNoTable(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\ForeignKeyException::class);
+        $this->expectExceptionMessageMatches("/Unable to alter foreign key '.+'\.'.+', foreign table '.+' does not exists/");
+
         //Create thought migration
         $this->migrator->configure();
 
@@ -343,6 +391,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testAlterForeignNoColumn(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\ForeignKeyException::class);
+        $this->expectExceptionMessageMatches("/Unable to alter foreign key '.+'\.'.+', foreign column '.+'\.'.+' does not exists/");
+
         //Create thought migration
         $this->migrator->configure();
 
@@ -373,6 +424,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testDropNonExistedFK(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\ForeignKeyException::class);
+        $this->expectExceptionMessageMatches("/Unable to drop foreign key '.+'\.'.+', foreign key does not exists/");
+
         //Create thought migration
         $this->migrator->configure();
 
@@ -394,6 +448,9 @@ abstract class ExceptionsTest extends BaseTest
 
     public function testAddExisted(): void
     {
+        $this->expectException(\Spiral\Migrations\Exception\Operation\ForeignKeyException::class);
+        $this->expectExceptionMessageMatches("/Unable to add foreign key '.+'\.(.+), foreign key already exists/");
+
         //Create thought migration
         $this->migrator->configure();
 
@@ -439,6 +496,7 @@ abstract class ExceptionsTest extends BaseTest
     public function testDuplicateClassMigration(): void
     {
         $this->expectException(\Spiral\Migrations\Exception\RepositoryException::class);
+        $this->expectExceptionMessageMatches("/Unable to register migration '.+', migration already exists/");
         $this->repository->registerMigration('unique_name_1', DuplicateColumnMigration::class);
         $this->repository->registerMigration('unique_name_2', DuplicateColumnMigration::class);
     }
@@ -446,6 +504,7 @@ abstract class ExceptionsTest extends BaseTest
     public function testDuplicateFileNameMigration(): void
     {
         $this->expectException(\Spiral\Migrations\Exception\RepositoryException::class);
+        $this->expectExceptionMessageMatches("/Unable to register migration 'camel_case_duplicate', migration under the same name already exists/");
         $this->repository->registerMigration('camel_case_duplicate', DuplicateColumnMigration::class);
         $this->repository->registerMigration('camelCaseDuplicate', CreateEmptyMigration::class);
     }
@@ -453,6 +512,7 @@ abstract class ExceptionsTest extends BaseTest
     public function testInvalidMigration(): void
     {
         $this->expectException(\Spiral\Migrations\Exception\RepositoryException::class);
+        $this->expectExceptionMessageMatches("/Unable to register migration '.+', representing class does not exists/");
         $this->repository->registerMigration('m', 'invalid');
     }
 }

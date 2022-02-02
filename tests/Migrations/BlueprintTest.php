@@ -134,6 +134,8 @@ abstract class BlueprintTest extends BaseTest
     public function testUpdateTableError(): void
     {
         $this->expectException(\Spiral\Migrations\Exception\Operation\TableException::class);
+        $this->expectExceptionMessageMatches("/Unable to create table '.+'\.'.+', table already exists/");
+
         $blueprint = new TableBlueprint($capsule = new Capsule($this->db), 'sample');
 
         $blueprint->addColumn('id', 'primary')
@@ -174,6 +176,8 @@ abstract class BlueprintTest extends BaseTest
     public function testUpdateTableError2(): void
     {
         $this->expectException(\Spiral\Migrations\Exception\Operation\ColumnException::class);
+        $this->expectExceptionMessageMatches("/Unable to create column '.+'\.'.+', column already exists/");
+
         $blueprint = new TableBlueprint($capsule = new Capsule($this->db), 'sample');
 
         $blueprint->addColumn('id', 'primary')
@@ -192,6 +196,8 @@ abstract class BlueprintTest extends BaseTest
     public function testUpdateTableError5(): void
     {
         $this->expectException(\Spiral\Migrations\Exception\Operation\ColumnException::class);
+        $this->expectExceptionMessageMatches("/Option '.+' are required to define column with type '.+'/");
+
         $blueprint = new TableBlueprint($capsule = new Capsule($this->db), 'sample');
 
         $blueprint->addColumn('id', 'primary')
@@ -210,6 +216,8 @@ abstract class BlueprintTest extends BaseTest
     public function testUpdateTableError3(): void
     {
         $this->expectException(\Spiral\Migrations\Exception\Operation\IndexException::class);
+        $this->expectExceptionMessageMatches("/Unable to create index '.+'\.(.+), index already exists/");
+
         $blueprint = new TableBlueprint($capsule = new Capsule($this->db), 'sample');
 
         $blueprint->addColumn('id', 'primary')
